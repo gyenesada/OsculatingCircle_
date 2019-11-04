@@ -43,12 +43,17 @@ namespace OsculatingCurve
 
         public void drawFunction(List<dPoint> usedPoints)
         {
+            preComputePoints(usedPoints);
+            doDraw();
+        }
+
+        public void doDraw()
+        {
             graphics.Clear(Color.White);
             initCartesian();
-            preComputePoints(usedPoints);
             Point bufferPoint = pointsToDraw[0];
 
-            for (int i = 1; i<pointsToDraw.Count(); i++)
+            for (int i = 1; i < pointsToDraw.Count(); i++)
             {
                 Point nextPoint = pointsToDraw[i];
 
@@ -85,6 +90,43 @@ namespace OsculatingCurve
                 
             }
 
+        }
+
+        public Point drawCenterOfCurvature(dPoint centerOfCurvature)
+        {
+            doDraw();
+            Point centerPoint = new Point
+                (
+                    origo.X + (int)(scale * centerOfCurvature.X),
+                    origo.Y - (int)(scale * centerOfCurvature.Y)
+                );
+
+            graphics.DrawEllipse(new Pen(Color.Blue), centerPoint.X - 1, centerPoint.Y - 1, 4, 4);
+            return centerPoint;
+        }
+
+        public void drawCircle(dPoint center, double radius)
+        {
+            Point centerPoint = drawCenterOfCurvature(center);
+            int scaledRadius = (int)(scale * radius);
+
+            graphics.DrawEllipse(new Pen(Color.Pink), centerPoint.X - scaledRadius, centerPoint.Y - scaledRadius, scaledRadius*2, scaledRadius*2);
+        }
+
+        public Point transformPoint(Point clickedPoint)
+        {
+            Point returnedPoint = new Point
+                (
+                    (clickedPoint.X - origo.X) / scale,
+                    (clickedPoint.Y + origo.Y) / scale
+                );
+
+            return returnedPoint;
+        }
+
+        public void drawPoint(dPoint point, Color color)
+        {
+            graphics.DrawEllipse(new Pen(color), point.toPoint().X - 3, point.toPoint().Y - 3, 6, 6);
         }
     }
 }

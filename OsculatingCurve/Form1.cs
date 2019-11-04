@@ -22,6 +22,7 @@ namespace OsculatingCurve
         double curvature;
         double radiusOfCurvature;
         dPoint centerOfCurvature;
+        Visualizer visualizer;
 
         dPoint ortogonalizedSecondDerivative;
 
@@ -171,24 +172,23 @@ namespace OsculatingCurve
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            Visualizer visualizer = new Visualizer(canvas);
+            visualizer = new Visualizer(canvas);
             getPoints();
 
-            visualizer.drawFunction(usedPoints);
-
             int index = closestPoint(pont);
-            Console.WriteLine("Beírt pont: " + pont);
+
+            visualizer.drawFunction(usedPoints);
             Console.WriteLine("Legközelebbi pont: " + closest.X + ", " + closest.Y);
 
             getFirstDerivative(index);
             Console.WriteLine("Első derivált: " + firstDerivative.X + ", " + firstDerivative.Y);
-            
+
             getSecondDerivative(index);
             Console.WriteLine("Második derivált: " + secondDerivative.X + ", " + secondDerivative.Y);
 
             calcCurvature();
             calcCentreOfCurvate(index);
-
+            visualizer.drawCircle(centerOfCurvature, radiusOfCurvature);
         }
 
 
@@ -286,9 +286,11 @@ namespace OsculatingCurve
         private void canvas_Click(object sender, EventArgs e)
         {
             MouseEventArgs me = (MouseEventArgs)e;
-            Point bufferPoint = me.Location;
+            Point bufferPoint = visualizer.transformPoint(me.Location);
+            
+            int index = closestPoint(bufferPoint);
 
-              
+            //visualizer.drawPoint(usedPoints[index], Color.Red);
         }
     }
 }
