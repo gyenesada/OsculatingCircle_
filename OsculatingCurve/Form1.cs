@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,12 +13,14 @@ namespace OsculatingCurve
 {
     public partial class Form1 : Form
     {
-        double epszilon = 0.01;
+        double epszilon = 0.1;
         List<dPoint> usedPoints = new List<dPoint>();
 
         dPoint firstDerivative;
         dPoint secondDerivative;
         dPoint normalVector;
+
+        Image img;
 
         double curvature;
         double radiusOfCurvature;
@@ -144,10 +147,13 @@ namespace OsculatingCurve
             string codeY = textBoxY.Text;
             string[] interval = textBoxInt.Text.Split(',');
 
-            pont = new Point( 
-                int.Parse(textBoxPoint.Text.Split(',')[0]),
-                int.Parse(textBoxPoint.Text.Split(',')[1])
-            );
+            if ((textBoxPoint.Text != ","))
+            {
+                pont = new Point(
+                    int.Parse(textBoxPoint.Text.Split(',')[0]),
+                    int.Parse(textBoxPoint.Text.Split(',')[1])
+                );
+            }
 
             if (interval.Length != 2) throw new ArgumentException();
 
@@ -175,20 +181,12 @@ namespace OsculatingCurve
             visualizer = new Visualizer(canvas);
             getPoints();
 
-            int index = closestPoint(pont);
+            if (pont != null)
+            {
+                int index = closestPoint(pont);
+            }
 
             visualizer.drawFunction(usedPoints);
-            Console.WriteLine("Legközelebbi pont: " + closest.X + ", " + closest.Y);
-
-            getFirstDerivative(index);
-            Console.WriteLine("Első derivált: " + firstDerivative.X + ", " + firstDerivative.Y);
-
-            getSecondDerivative(index);
-            Console.WriteLine("Második derivált: " + secondDerivative.X + ", " + secondDerivative.Y);
-
-            calcCurvature();
-            calcCentreOfCurvate(index);
-            visualizer.drawCircle(centerOfCurvature, radiusOfCurvature);
         }
 
 
@@ -234,21 +232,24 @@ namespace OsculatingCurve
                 );
         }
 
-        private void calcCurvature()
+        private void calcCurvature() 
         {
-            curvature = ((secondDerivative.scalar(normalVector)) / Math.Pow(firstDerivative.euclideanNorm(), 2));
+
             normalVector = new dPoint(-firstDerivative.Y, firstDerivative.X);
+            curvature = ((secondDerivative.scalar(normalVector)) / Math.Pow(firstDerivative.euclideanNorm(), 2));
 
-            Console.WriteLine("Görbület1: " + curvature);
+            Console.WriteLine("Görbület: " + curvature);
 
-            if (curvature != 0)
+            if (curvature > 0.0000000000001 || curvature < -0.0000000000001)
             {
-                radiusOfCurvature = 1 / Math.Abs(curvature);
+                radiusOfCurvature = 1 / Math.Abs(curvature); 
             }
             else
             {
                 radiusOfCurvature = 0;
             }
+
+            Console.WriteLine("Görbületi sugár: " + radiusOfCurvature);
             
         }
 
@@ -289,8 +290,62 @@ namespace OsculatingCurve
             Point bufferPoint = visualizer.transformPoint(me.Location);
             
             int index = closestPoint(bufferPoint);
+        }
 
-            //visualizer.drawPoint(usedPoints[index], Color.Red);
+        private void animationBtn_Click(object sender, EventArgs e)
+        {
+            for(int i=2; i<=usedPoints.Count-2; i+=1)
+            {
+                getFirstDerivative(i);
+                getSecondDerivative(i);
+
+                calcCurvature();
+                calcCentreOfCurvate(i);
+
+                using (var bmpTemp = new Bitmap(@"D:\temp.jpg"))
+                {
+                    img = new Bitmap(bmpTemp);
+                } 
+                
+                if (holdOnCB.Checked)
+                {
+                    visualizer.drawCircle(centerOfCurvature, radiusOfCurvature, img, true);
+                }
+                else
+                {
+                    visualizer.drawCircle(centerOfCurvature, radiusOfCurvature, img, false);
+                }
+
+                Thread.Sleep(150);
+            }
+        }
+
+        private void pointBtn_Click(object sender, EventArgs e)
+        {
+            string[] chosenPoint = textBoxPoint.Text.Split(',');
+            if (chosenPoint.Length == 2 && textBoxPoint.Text != ",")
+            {
+
+                pont = new Point(
+                    int.Parse(textBoxPoint.Text.Split(',')[0]),
+                    int.Parse(textBoxPoint.Text.Split(',')[1])
+                );
+
+                int index = closestPoint(pont);
+
+                visualizer.drawFunction(usedPoints);
+                Console.WriteLine("Legközelebbi pont: " + closest.X + ", " + closest.Y);
+
+                getFirstDerivative(index);
+                Console.WriteLine("Első derivált: " + firstDerivative.X + ", " + firstDerivative.Y);
+
+                getSecondDerivative(index);
+                Console.WriteLine("Második derivált: " + secondDerivative.X + ", " + secondDerivative.Y);
+
+                calcCurvature();
+                calcCentreOfCurvate(index);
+                visualizer.drawCircle(centerOfCurvature, radiusOfCurvature);
+            }
         }
     }
 }
