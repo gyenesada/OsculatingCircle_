@@ -84,7 +84,7 @@ namespace OsculatingCurve
                         bufferPoint = nextPoint;
                     }
                 }
-                bmp.Save(@"D:\temp.jpg");
+                bmp.Save("temp.jpg");
             }
 
         }

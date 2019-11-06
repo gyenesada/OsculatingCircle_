@@ -309,7 +309,7 @@ namespace OsculatingCurve
                 calcCurvature();
                 calcCentreOfCurvate(i);
 
-                using (var bmpTemp = new Bitmap(@"D:\temp.jpg"))
+                using (var bmpTemp = new Bitmap("temp.jpg"))
                 {
                     img = new Bitmap(bmpTemp);
                 } 
