@@ -131,7 +131,13 @@ namespace OsculatingCurve
                     }
                     else
                     {
-                        evalStack.Add(Double.Parse(item.Replace('.', ',')));
+                        try
+                        {
+                            evalStack.Add(Double.Parse(item.Replace('.', ',')));
+                        }catch(System.FormatException e)
+                        {
+                            MessageBox.Show("Nem jó formátum!");
+                        }
                     }
                 }
             }
@@ -187,6 +193,7 @@ namespace OsculatingCurve
             }
 
             visualizer.drawFunction(usedPoints);
+            cleanBtn.Enabled = true;
         }
 
 
@@ -309,11 +316,17 @@ namespace OsculatingCurve
                 
                 if (holdOnCB.Checked)
                 {
-                    visualizer.drawCircle(centerOfCurvature, radiusOfCurvature, img, true);
+                    if (centerCB.Checked)
+                    {
+                        visualizer.drawCircle(centerOfCurvature, radiusOfCurvature, img, true, true);
+                    }else
+                    {
+                        visualizer.drawCircle(centerOfCurvature, radiusOfCurvature, img, true, false);
+                    }
                 }
                 else
                 {
-                    visualizer.drawCircle(centerOfCurvature, radiusOfCurvature, img, false);
+                    visualizer.drawCircle(centerOfCurvature, radiusOfCurvature, img, false, false);
                 }
 
                 Thread.Sleep(150);
@@ -346,6 +359,22 @@ namespace OsculatingCurve
                 calcCentreOfCurvate(index);
                 visualizer.drawCircle(centerOfCurvature, radiusOfCurvature);
             }
+        }
+
+        private void holdOnCB_CheckedChanged(object sender, EventArgs e)
+        {
+            if (holdOnCB.Checked)
+            {
+                centerCB.Enabled = true;
+            }else
+            {
+                centerCB.Enabled = false;
+            }
+        }
+
+        private void cleanBtn_Click(object sender, EventArgs e)
+        { 
+            visualizer.drawFunction(usedPoints);
         }
     }
 }

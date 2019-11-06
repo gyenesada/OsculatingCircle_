@@ -41,6 +41,8 @@
             this.labelInt = new System.Windows.Forms.Label();
             this.labelPont = new System.Windows.Forms.Label();
             this.holdOnCB = new System.Windows.Forms.CheckBox();
+            this.centerCB = new System.Windows.Forms.CheckBox();
+            this.cleanBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
             // 
@@ -157,18 +159,43 @@
             // holdOnCB
             // 
             this.holdOnCB.AutoSize = true;
-            this.holdOnCB.Location = new System.Drawing.Point(838, 277);
+            this.holdOnCB.Location = new System.Drawing.Point(761, 254);
             this.holdOnCB.Name = "holdOnCB";
             this.holdOnCB.Size = new System.Drawing.Size(61, 17);
             this.holdOnCB.TabIndex = 12;
             this.holdOnCB.Text = "hold on";
             this.holdOnCB.UseVisualStyleBackColor = true;
+            this.holdOnCB.CheckedChanged += new System.EventHandler(this.holdOnCB_CheckedChanged);
+            // 
+            // centerCB
+            // 
+            this.centerCB.AutoSize = true;
+            this.centerCB.Enabled = false;
+            this.centerCB.Location = new System.Drawing.Point(761, 277);
+            this.centerCB.Name = "centerCB";
+            this.centerCB.Size = new System.Drawing.Size(78, 17);
+            this.centerCB.TabIndex = 13;
+            this.centerCB.Text = "center only";
+            this.centerCB.UseVisualStyleBackColor = true;
+            // 
+            // cleanBtn
+            // 
+            this.cleanBtn.Enabled = false;
+            this.cleanBtn.Location = new System.Drawing.Point(824, 353);
+            this.cleanBtn.Name = "cleanBtn";
+            this.cleanBtn.Size = new System.Drawing.Size(75, 23);
+            this.cleanBtn.TabIndex = 14;
+            this.cleanBtn.Text = "Tisztítás";
+            this.cleanBtn.UseVisualStyleBackColor = true;
+            this.cleanBtn.Click += new System.EventHandler(this.cleanBtn_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(911, 540);
+            this.Controls.Add(this.cleanBtn);
+            this.Controls.Add(this.centerCB);
             this.Controls.Add(this.holdOnCB);
             this.Controls.Add(this.labelPont);
             this.Controls.Add(this.labelInt);
@@ -206,6 +233,8 @@
         private System.Windows.Forms.Label labelInt;
         private System.Windows.Forms.Label labelPont;
         private System.Windows.Forms.CheckBox holdOnCB;
+        private System.Windows.Forms.CheckBox centerCB;
+        private System.Windows.Forms.Button cleanBtn;
     }
 }
 

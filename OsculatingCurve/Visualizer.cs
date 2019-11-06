@@ -25,7 +25,7 @@ namespace OsculatingCurve
         public Visualizer(PictureBox canvas)
         {
             this.canvas = canvas;
-            drawingPen = new Pen(Color.Green);
+            drawingPen = new Pen(Color.Green, 1.5f);
             initCartesian();
         }
 
@@ -137,7 +137,7 @@ namespace OsculatingCurve
             return centerPoint;
         }
 
-        public void drawCircle(dPoint center, double radius, Image img, Boolean b)
+        public void drawCircle(dPoint center, double radius, Image img, Boolean b, Boolean centerOnly)
         {
             if (!b)
             {
@@ -145,7 +145,10 @@ namespace OsculatingCurve
             }
             Point centerPoint = drawCenterOfCurvature(center);
             int scaledRadius = (int)(scale * radius);
-            graphics.DrawEllipse(new Pen(Color.Coral), centerPoint.X - scaledRadius, centerPoint.Y - scaledRadius, scaledRadius*2, scaledRadius*2);
+            if (!centerOnly)
+            {
+                graphics.DrawEllipse(new Pen(Color.Coral), centerPoint.X - scaledRadius, centerPoint.Y - scaledRadius, scaledRadius * 2, scaledRadius * 2);
+            }
         }
 
         public void drawCircle(dPoint center, double radius)
